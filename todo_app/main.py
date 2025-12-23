@@ -6,19 +6,17 @@ import db_models  # Наш файл с БД и моделью
 
 app = FastAPI(
     title="TODO Service API",
-    description="Микросервис для управления задачами",
-    version="1.0.0"
+    description="Микросервис для управления задачами"
 )
 
 
-# Валидация создания задачи
+# Валидации Pydantic
 class TodoItemCreate(BaseModel):
     title: str
     description: Optional[str] = None
     completed: bool = False
 
 
-# Валидация ответа клиенту
 class TodoItemResponse(BaseModel):
     id: int
     title: str
@@ -29,25 +27,19 @@ class TodoItemResponse(BaseModel):
         from_attributes = True
 
 
-# Частичное обнолвение задачи
-
 class TodoItemUpdate(BaseModel):
-    """Схема для ЧАСТИЧНОГО обновления задачи"""
     title: Optional[str] = None
     description: Optional[str] = None
     completed: Optional[bool] = None
 
 
-# === Часть 3: Зависимость для получения сессии БД ===
 def get_db():
     db = db_models.SessionLocal()
     try:
-        yield db  # Отдаём сессию эндпоинту
+        yield db
     finally:
-        db.close()  # Закрываем сессию в любом случае
+        db.close()
 
-
-# === Часть 4: ЭНДПОИНТЫ API ===
 
 # Создание новой задачи
 @app.post("/items", response_model=TodoItemResponse, status_code=status.HTTP_201_CREATED)
@@ -58,7 +50,6 @@ def create_todo_item(item: TodoItemCreate, db: Session = Depends(get_db)):
         completed=item.completed
     )
 
-    # Добавляние в БД
     db.add(db_item)
     db.commit()
     db.refresh(db_item)
