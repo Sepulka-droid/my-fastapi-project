@@ -1,6 +1,6 @@
 # FastAPI Микросервисы: TODO и ShortURL
 
-Два микросервиса на FastAPI, упакованные в Docker контейнеры.
+Два микросервиса на FastAPI, упакованные в Docker-контейнеры.
 
 ## Сервисы
 
@@ -55,5 +55,20 @@ curl -X POST "http://localhost:8001/shorten" \
 curl "http://localhost:8001/stats/<short_url>
 ```
 
+### 4. Docker Hub
+Образы также доступны на Docker Hub:
+
+- **TODO-сервис:** `docker pull sepulkadroid/todo-service:latest`
+- **ShortURL-сервис:** `docker pull sepulkadroid/shorturl-service:latest`
+
+
+#### Запуск образов с Docker Hub
+```
+# TODO-сервис
+docker run -d -p 8000:80 -v todo_data:/app/data sepulkadroid/todo-service:latest
+
+# ShortURL-сервис  
+docker run -d -p 8001:80 -v shorturl_data:/app/data sepulkadroid/shorturl-service:latest
+```
 
 
